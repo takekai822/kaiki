@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <%= render "users/info", user: @book.user %>
+      <%= render "form", book: @booknew %>
+    </div>
+    <div class="col-md-8 offset-md-1">
+      <h2>Book detail</h2>
+      <table class="table">
+        <tbody>
+          <tr id="book_<%= @book.id %>">
+            <td>
+              <%= link_to user_path(@book.user) do %>
+                <%= image_tag @book.user.get_profile_image, size: "100x100" %><br>
+                <%= @book.user.name %>
+              <% end %>
+            </td>
+            <td>
+              <%= link_to book_path(@book) do %>
+                <%= @book.title %>
+              <% end %>
+            </td>
+            <td>
+              <%= @book.body %>
+            </td>
+            <td class="favorites-btn">
+              <%= render "favorites/favorites", book: @book %>
+            </td>
+            <td class="comments-count">
+              コメント数：<%= @book.book_comments.count %>
+            </td>
+            <td>
+              閲覧数：<%= @book.view_counts.count %>
+            </td>
+            <td id="star-rate<%= @book.id %>"></td>
+            <script>
+              $('#star-rate<%= @book.id%>').raty({
+                size      : 36,
+                starOff   : '<%= asset_path('star-off.png') %>',
+                starOn    : '<%= asset_path('star-on.png') %>',
+                starHalf  : '<%= asset_path('star-half.png') %>',
+                half      : true,
+                readOnly  : true,
+                score: <%= @book.rate %>
+                });
+            </script>
+            <% if @book.user == current_user %>
+              <td>
+                <%= link_to "Edit", edit_book_path(@book), class: "btn btn-sm btn-success edit_book_#{@book.id}" %>
+              </td>
+              <td>
+                <%= link_to "Destroy", book_path(@book), method: :delete, class: "btn btn-sm btn-danger destroy_book_#{@book.id}", "data-confirm" => "本当に消しますか？" %>
+              </td>
+            <% end %>
+          </tr>
+        </tbody>
+      </table>
+      <table>
+        <tbody class="book-comments">
+          <%= render "book_comments/book_comments", book: @book %>
+        </tbody>
+      </table>
+      <div class="comment-form">
+        <%= render "book_comments/form", book: @book, book_comment: @book_comment %>
+      </div>
+    </div>
+  </div>
+</div>
